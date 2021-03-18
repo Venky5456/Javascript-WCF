@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+</head>
+<body>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.5/angular.js"></script>
+<script type="text/javascript">
+    var app = angular.module('MyApp', []);
+    app.controller('MyController', function ($scope, $http, $window) {
+        $scope.Add = function () {
+            var obj = {};
+            obj.requestid = $scope.RequestID == undefined ? 0 : $scope.RequestID;
+            obj.requesttime = $scope.RequestTime;
+            obj.requesttype = $scope.RequestType;
+            obj.requestdata = $scope.RequestData;
+            $.ajax({
+                url: 'http://localhost:60981/Service1.svc/InsertDetails',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(obj),
+                success: function (response) {
+                    window.alert('Record Added')
+                },
+                error: function (err) {
+                    window.alert(err);
+                }
+            });
+        }
+
+        $scope.Delete = function (id) {
+            var obj = {};
+            obj.id = id;
+            $.ajax({
+                url: 'http://localhost:60981/Service1.svc/DeleteDetails',
+                type: "POST",
+                contentType: 'application/json',
+                data: JSON.stringify(obj),
+                success: function (response) {
+                    //GetCustomers($scope);
+                },
+                error: function (err) {
+                    alert(response.responseText);
+                }
+            });
+        }
+        //var requestID = document.getElementById("txtRequestID").value;
+        $scope.Edit = function (requestID) {
+            var customers = $scope.TblProcessDetailsDemo;
+            customers.map(function (customer) {
+                if (customer.Id == id) {
+                    $scope.RequestID = customer.RequestID;
+                    $scope.RequestTime = customer.RequestTime;
+                    $scope.RequestType = customer.RequestType;
+                    $scope.RequestData = customer.RequestData;
+                    //$scope.ButtonText = "Update";
+                }
+            });
+        }
+    });
+
+
+</script>
+<div ng-app="MyApp" ng-controller="MyController">
+    <div class="container">
+        <div class="row">
+            <table class="table">
+                <tr>
+                    <td>Request ID</td>
+                    <td>
+                        <input type="hidden" ng-model="Id" />
+                        <input type="text" id="txtRequestID" class="form-control" name="RequestID" ng-model="RequestID" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Request Time</td>
+                    <td><input type="text" id="txtRequestTime" class="form-control" name="RequestTime" ng-model="RequestTime" /></td>
+                </tr>
+                <tr>
+                    <td>Request Type</td>
+                    <td><input type="text" id="txtRequestType" class="form-control" name="RequestType" ng-model="RequestType" /></td>
+                </tr>
+                <tr>
+                    <td>Request Data</td>
+                    <td><input type="text" id="txtRequestData" class="form-control" name="RequestData" ng-model="RequestData" /></td>
+                </tr>
+                <tr>
+                    <td colspan="2" align="center">
+                        <button type="button" id="btnInsert" class="btn btn-primary" ng-click="Add()">Insert</button>
+                        <button type="button" id="Button3" class="btn btn-primary" ng-click="Edit()">Update</button>
+                        <button type="button" id="Button4" class="btn btn-primary" ng-click="Delete()">Delete</button>
+                    </td>
+                </tr>
+                
+            </table>
+        </div>
+    </div>
+    <!--<div class="container">
+        <div class="row">
+            <table class="table table-striped table-bordered table-condensed">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Type</th>
+                        <th>Data</th>
+                        <th>Edit | Delete</th>
+                    </tr>
+                </thead>
+                <tbody ng-repeat="customer in TblProcessDetailsDemo">
+                    <tr>
+                        <td>{{customer.RequestID}}</td>
+                        <td>{{customer.RquestTime}}</td>
+                        <td>{{customer.RequestData}}</td>
+                        <td>
+                            <button type="button" id="btnEdit" class="btn btn-primary" ng-click="Edit(customer.Id)">Edit<i class="fa fa-edit"></i></button>
+                            <button type="button" id="btnDelete" class="btn btn-primary" ng-click="Delete(customer.Id)">Delete<i class="fa fa-trash-o"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>-->
+</div>
+</body>
+</html>
